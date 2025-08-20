@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
 using Proyecto2024.Server.Repositorio;
@@ -30,6 +31,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<Context>()
+                .AddDefaultTokenProviders();
+
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ITituloRepositorio, TituloRepositorio>();
@@ -52,6 +58,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseOutputCache();
