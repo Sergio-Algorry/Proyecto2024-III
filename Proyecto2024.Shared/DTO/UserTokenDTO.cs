@@ -9,6 +9,6 @@ namespace Proyecto2024.Shared.DTO
     public class UserTokenDTO
     {
         public string Token { get; set; } = null!;
-        public DateTime Expiration { get; set; }
+        public DateTime Expiracion { get; set; }
     }
 }

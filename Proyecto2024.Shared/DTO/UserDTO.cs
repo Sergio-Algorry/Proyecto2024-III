@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace Proyecto2024.Shared.DTO
 {
-    public class UserInfoDTO
+    public class UserDTO
     {
         [EmailAddress]
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public string Nombre { get; set; } = null!;
     }
 }
