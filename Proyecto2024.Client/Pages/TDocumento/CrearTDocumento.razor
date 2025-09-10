@@ -1,6 +1,6 @@
 ﻿@page "/api/TDocumentos/crear"
-@inject IHttpServicio http
-@inject NavigationManager navigationManager
+    @inject IHttpServicio http
+    @inject NavigationManager navigationManager
 <h3>Nuevo tipo de documento</h3>
 
 <EditForm Model="tDocumento" OnValidSubmit="Grabar">
@@ -29,7 +29,7 @@
 
     private async Task Grabar()
     {
-        var httpRespuesta = await http.Post<TDocumento>("api/TDocumentos", tDocumento);
+        var httpRespuesta = await http.Post<TDocumento, int>("api/TDocumentos", tDocumento);
         if(httpRespuesta.Error)
         {
             var body = httpRespuesta.HttpResponseMessage;

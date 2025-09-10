@@ -14,6 +14,7 @@ namespace Proyecto2024.Client.Autorizacion
                 {
                     new Claim(ClaimTypes.Name, "Pepe Sanchez"),
                     new Claim(ClaimTypes.Role, "admin"),
+                    new Claim(ClaimTypes.Role, "operador"),
                     new Claim("DNI", "12.587.895"),
                 },
                 authenticationType: "ok"
@@ -27,7 +28,7 @@ namespace Proyecto2024.Client.Autorizacion
                 },
                 authenticationType: "ok"
                 );
-            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(usuarioJuan)));
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(usuarioPepe)));
         }
     }
 }

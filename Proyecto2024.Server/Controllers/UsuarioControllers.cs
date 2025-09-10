@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Proyecto2024.BD.Usuario;
 using Proyecto2024.Shared.DTO;
 using System.Security.Claims;
 using System.Text;
@@ -15,12 +14,12 @@ namespace Proyecto2024.Server.Controllers
     [Route("usuarios")]
     public class UsuarioControllers : ControllerBase
     {
-        private readonly UserManager<MiUsuario> userManager;
-        private readonly SignInManager<MiUsuario> signInManager;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
         private readonly IConfiguration configuration;
 
-        public UsuarioControllers(UserManager<MiUsuario> userManager,
-                                  SignInManager<MiUsuario> signInManager,
+        public UsuarioControllers(UserManager<IdentityUser> userManager,
+                                  SignInManager<IdentityUser> signInManager,
                                   IConfiguration configuration)
         {
             this.userManager = userManager;
@@ -31,7 +30,7 @@ namespace Proyecto2024.Server.Controllers
         [HttpPost("registrar")]
         public async Task<ActionResult<UserTokenDTO>> RegistrarUsuario([FromBody] UserInfoDTO userInfoDTO)
         {
-            var usuario = new MiUsuario { UserName = userInfoDTO.Nombre, Email = userInfoDTO.Email };
+            var usuario = new IdentityUser { UserName = userInfoDTO.Email, Email = userInfoDTO.Email };
             var res = await userManager.CreateAsync(usuario, userInfoDTO.Password);
 
             if(res.Succeeded)
@@ -67,7 +66,6 @@ namespace Proyecto2024.Server.Controllers
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, userInfoDTO.Nombre),
                 new Claim(ClaimTypes.Email, userInfoDTO.Email),
                 new Claim("otro", "cualquier cosa")
             };
