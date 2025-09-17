@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
@@ -9,6 +12,7 @@ namespace Proyecto2024.Server.Controllers
 {
     [ApiController]
     [Route("api/TDocumentos")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TDocumentosControllers : ControllerBase
     {
         private readonly ITDocumentoRepositorio repositorio;
@@ -25,6 +29,7 @@ namespace Proyecto2024.Server.Controllers
 
         [HttpGet]    //api/TDocumentos
         [OutputCache(Tags = [cacheKey])]
+        [AllowAnonymous]
         public async Task<ActionResult<List<TDocumento>>> Get()
         {
             return await repositorio.Select();
