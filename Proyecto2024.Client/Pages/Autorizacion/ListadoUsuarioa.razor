@@ -1,41 +1,39 @@
-﻿@page "/TDocumentos"
+﻿@page "/usuarios"
 @inject IHttpServicio http
 
-<h3>Lista de Tipos de documentos</h3>
+<h3>Listado de Usuarios</h3>
 <br />
-<a class="btn btn-primary" href="/api/TDocumentos/crear">Nuevo tipo de documento</a>
+<a class="btn btn-primary" href="/api/usuarios/crear">Nuevo Usuario</a>
 <br />
 <table>
     <tr>
-        <th>Código</th>
-        <th>Nombre</th>
+        <th>Usuario</th>
     </tr>
     @if (Mensaje == "")
     {
-        @if (listaDocumentos == null)
+        @if (listaUsuarios == null)
         {
             <p>Buscando....</p>
         }
-        else if(listaDocumentos.Count == 0)
+        else if (listaUsuarios.Count == 0)
         {
-            <p>No existen tipos de documentos</p>
+            <p>No existen usuarios registrados</p>
         }
         else
         {
-            @foreach (var item in listaDocumentos)
+            @foreach (var item in listaUsuarios)
             {
                 <tr>
-                    <td>@item.Codigo</td>
-                    <td>@item.Nombre</td>
+                    <td>@item.Email</td>
                     <td>
                         <a class="btn btn-primary"
-                           href="api/TDocumentos/editar/@item.Id">
+                           href="api/usuarios/editar/@item.Id">
                             Editar
                         </a>
                     </td>
                     <td>
                         <button class="btn btn-danger"
-                           @onclick = "()=>Eliminar(item)">
+                                @onclick="() => Eliminar(item)">
                             Borrar
                         </button>
                     </td>
@@ -54,20 +52,20 @@
               textCancelar="Salir"
               onCancel="Cancelar"
               onConfirm="Borrar">
-              <h5>Está por borrar el tipo de documento</h5>
-              <br />
-              <p>Está seguro?</p>
+    <h5>Está por borrar un usuario</h5>
+    <br />
+    <p>Está seguro?</p>
 </Confirmacion>
 
 
 @code {
     Confirmacion confirmacion;
 
-    List<TDocumento> listaDocumentos;
-    TDocumento tDocumento;
+    List<UserListadoDTO> listaUsuarios;
+    UserListadoDTO usuario;
     string Mensaje = "";
 
-    TDocumento? tDocBorrar = null;
+    UserListadoDTO? UsuarioBorrar = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,10 +75,10 @@
 
     private async Task Leer()
     {
-        var resp = await http.Get<List<TDocumento>>("api/TDocumentos");
+        var resp = await http.Get<List<UserListadoDTO>>("usuarios/admin");
         if (!resp.Error)
         {
-            listaDocumentos = resp.Respuesta;
+            listaUsuarios = resp.Respuesta;
         }
         else
         {
@@ -88,21 +86,21 @@
         }
     }
 
-    private async Task Eliminar(TDocumento tdocumento)
+    private async Task Eliminar(UserListadoDTO userListadoDTO)
     {
-        tDocBorrar = tdocumento;
+        UsuarioBorrar = userListadoDTO;
         confirmacion.Ver();
     }
 
     private void Cancelar()
     {
         confirmacion.Ocultar();
-        tDocBorrar = null;
+        UsuarioBorrar = null;
     }
 
     private async Task Borrar()
     {
-        var respuesta = await http.Delete($"api/TDocumentos/{tDocBorrar.Id}");
+        var respuesta = await http.Delete($"api/usuarios/{UsuarioBorrar.Id}");
         if (respuesta.Error)
         {
             var body = "No se pudo borrar";
