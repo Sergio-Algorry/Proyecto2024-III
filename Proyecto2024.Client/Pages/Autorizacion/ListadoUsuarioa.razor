@@ -2,9 +2,6 @@
 @inject IHttpServicio http
 
 <h3>Listado de Usuarios</h3>
-<br />
-<a class="btn btn-primary" href="/api/usuarios/crear">Nuevo Usuario</a>
-<br />
 <table>
     <tr>
         <th>Usuario</th>
@@ -27,15 +24,9 @@
                     <td>@item.Email</td>
                     <td>
                         <a class="btn btn-primary"
-                           href="api/usuarios/editar/@item.Id">
-                            Editar
+                           href="usuarios/editar/@item.Id">
+                            Editar Roles
                         </a>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger"
-                                @onclick="() => Eliminar(item)">
-                            Borrar
-                        </button>
                     </td>
                 </tr>
             }

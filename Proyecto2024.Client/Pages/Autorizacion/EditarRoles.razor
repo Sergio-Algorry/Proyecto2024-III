@@ -1,0 +1,79 @@
+﻿@page "/usuarios/editar/{UsuarioId}"
+@inject IHttpServicio http
+
+<h3>Editar Roles</h3>
+@if (roles is null)
+{
+    <p><em>Buscando...</em></p>
+}
+else
+{
+    <div class="form-inline">
+        <select class="form-select mb2" @bind="rolSeleccionado">
+            <option value="0">Seleccionar un rol</option>
+            @foreach (var rol in roles)
+            {
+                <option value="@rol.Nombre">@rol.Nombre</option>
+            }
+        </select>
+        <button class="btn btn-primary mb-2" @onclick="AsignarRol">Asignar Rol</button>
+        <button class="btn btn-danger mb-2" @onclick="RemoverRol">Remover Rol</button>
+    </div>
+}
+<br />
+<p>@mensaje</p>
+
+@code {
+    [Parameter]
+    public string UsuarioId { get; set; } = null!;
+
+    private List<RolDTO>? roles;
+    private string rolSeleccionado = "0";
+
+    private string mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await http.Get<List<RolDTO>>("usuarios/admin/roles");
+        if (response.Error)
+        {
+            mensaje = await response.ObtenerError();
+            return;
+        }
+        roles = response.Respuesta;
+    }
+
+    private async Task AsignarRol()
+    {
+        await EditarRol("usuarios/admin/asignarRol");
+    }
+
+    private async Task RemoverRol()
+    {
+        await EditarRol("usuarios/admin/removerRol");
+    }
+
+    private async Task EditarRol(string url)
+    {
+        if(rolSeleccionado=="0")
+        {
+            mensaje = "Debe seleccionar un rol";
+            return;
+        }
+        var rolDTO =new RolEditarDTO() { 
+            UsuarioId=UsuarioId,
+            Rol=rolSeleccionado
+        };
+        var respuesta = await http.Post<RolEditarDTO, object>(url, rolDTO);
+        if (respuesta.Error)
+        {
+            mensaje = await respuesta.ObtenerError();
+            return;
+        }
+        else
+        {
+            mensaje = $"Se asignó el Rol {rolDTO.Rol} al usuario {UsuarioId}";
+        }
+
+    }
+}

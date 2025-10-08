@@ -11,7 +11,7 @@ namespace Proyecto2024.Client.Servicios
         public HttpServicio(HttpClient http)
         {
             this.http = http;
-        }   
+        }
 
         public async Task<HttpRespuesta<T>> Get<T>(string url) //https://localhost:7268/api/TDocumentos
         {
@@ -29,7 +29,7 @@ namespace Proyecto2024.Client.Servicios
             }
         }
 
-        public async Task<HttpRespuesta<TResp>> Post<T, TResp>(string url, T entidad)
+        public async Task<HttpRespuesta<TResp?>> Post<T, TResp>(string url, T entidad)
         {
             var enviarJson = JsonSerializer.Serialize(entidad);
 
@@ -38,14 +38,14 @@ namespace Proyecto2024.Client.Servicios
                                 "application/json");
 
             var response = await http.PostAsync(url, enviarContent);
-            if (response.IsSuccessStatusCode) 
+            if (response.IsSuccessStatusCode)
             {
                 var respuesta = await DesSerializar<TResp>(response);
-                return new HttpRespuesta<TResp>(respuesta, false, response);
+                return new HttpRespuesta<TResp?>(respuesta, false, response);
             }
             else
             {
-                return new HttpRespuesta<TResp>(default, true, response);
+                return new HttpRespuesta<TResp?>(default, true, response);
             }
         }
 
@@ -80,6 +80,11 @@ namespace Proyecto2024.Client.Servicios
         private async Task<T?> DesSerializar<T>(HttpResponseMessage response)
         {
             var respuestaStr = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(respuestaStr))
+            {
+                return default;
+            }
+
             return JsonSerializer.Deserialize<T>(respuestaStr,
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }

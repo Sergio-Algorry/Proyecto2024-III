@@ -34,5 +34,34 @@ namespace Proyecto2024.Server.Controllers
             }).ToListAsync();
             return usuariosDTO;
         }
+
+        [HttpGet("roles")]
+        public async Task<ActionResult<List<RolDTO>>> GetRoles()
+        {
+            var roles = await context.Roles.Select(r => new RolDTO
+            {
+                Nombre = r.Name!
+            }).ToListAsync();
+            return roles;
+        }
+
+        [HttpPost("asignarRol")]
+        public async Task<ActionResult> AsignarRol(RolEditarDTO rolEditarDto)
+        {
+            var usuario = await userManager.FindByIdAsync(rolEditarDto.UsuarioId);
+            if (usuario == null) { return NotFound("Usuario no encontrado"); }
+            await userManager.AddToRoleAsync(usuario, rolEditarDto.Rol);
+            return NoContent();
+        }
+
+        [HttpPost("removerRol")]
+        public async Task<ActionResult> RemoverRol(RolEditarDTO rolEditarDto)
+        {
+            var usuario = await userManager.FindByIdAsync(rolEditarDto.UsuarioId);
+            if (usuario == null) { return NotFound("Usuario no encontrado"); }
+            await userManager.RemoveFromRoleAsync(usuario, rolEditarDto.Rol);
+            return NoContent();
+        }
+
     }
 }
